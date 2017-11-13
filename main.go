@@ -46,6 +46,7 @@ func main() {
 
 	http.HandleFunc("/", handler)
 	http.Handle("/bigtable", tc.HTTPHandler(http.HandlerFunc(bigtable.HandlerBigtable)))
+	http.Handle("/bigtable/bigbang", tc.HTTPHandler(http.HandlerFunc(bigtable.HandlerBigbang)))
 
 	fmt.Println("listen start")
 	http.ListenAndServe(":8080", nil)

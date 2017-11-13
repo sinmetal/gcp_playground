@@ -1,6 +1,7 @@
 package bigtable
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 
@@ -28,7 +29,7 @@ func HandlerBigtable(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "POST" {
 		doPost(w, r)
 	} else if r.Method == "GET" {
-		http.Error(w, "", http.StatusMethodNotAllowed)
+		doGet(w, r)
 	} else if r.Method == "PUT" {
 		doPut(w, r)
 	} else if r.Method == "DELETE" {
@@ -36,6 +37,44 @@ func HandlerBigtable(w http.ResponseWriter, r *http.Request) {
 	} else {
 		http.Error(w, "", http.StatusMethodNotAllowed)
 	}
+}
+
+func doGet(w http.ResponseWriter, r *http.Request) {
+	ctx := context.Background()
+
+	tc, err := trace.NewClient(ctx, projectID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	span := tc.NewSpan("/bigtable")
+	defer span.FinishWait()
+	ctx = trace.NewContext(ctx, span)
+	do := grpc.WithUnaryInterceptor(tc.GRPCClientInterceptor())
+	o := option.WithGRPCDialOption(do)
+	client, err := bigtable.NewClient(ctx, projectID, instance, o)
+	if err != nil {
+		http.Error(w, fmt.Sprintf("failed Bigtable.NewClient(): projectID=%s, instance=%s", projectID, instance), http.StatusInternalServerError)
+		return
+	}
+	defer client.Close()
+
+	rows, err := GetRange(ctx, projectID, instance, table, family, "mycolumn")
+	if err != nil {
+		http.Error(w, fmt.Sprintf("failed GetRange: %v", err), http.StatusInternalServerError)
+		return
+	}
+
+	b, err := json.Marshal(rows)
+	if err != nil {
+		http.Error(w, fmt.Sprintf("failed json.Marshal: %v", err), http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	w.Header().Set("content-type", "application/json")
+	w.Write(b)
+	return
 }
 
 func doPost(w http.ResponseWriter, r *http.Request) {

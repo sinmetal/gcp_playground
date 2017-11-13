@@ -40,7 +40,7 @@ func CreateTableWithColumnFamily(ctx context.Context, adminClient *bigtable.Admi
 	return nil
 }
 
-func ListBigtable(ctx context.Context, projectID string, instance string, table string, family string, column string) ([]BigtableRow, error) {
+func GetRange(ctx context.Context, projectID string, instance string, table string, family string, column string) ([]BigtableRow, error) {
 	client, err := bigtable.NewClient(ctx, projectID, instance)
 	if err != nil {
 		return nil, fmt.Errorf("failed Bigtable.NewClient(): projectID=%s, instance=%s", projectID, instance)
