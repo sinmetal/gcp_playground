@@ -6,7 +6,11 @@ import (
 
 	"golang.org/x/net/context"
 
+	"google.golang.org/api/option"
+	"google.golang.org/grpc"
+
 	"cloud.google.com/go/bigtable"
+	"cloud.google.com/go/trace"
 )
 
 var projectID string
@@ -15,9 +19,9 @@ var instance string
 const table = "Item"
 const family = "myfamily"
 
-func SetUp(projectID string, instance string) {
-	projectID = projectID
-	instance = instance
+func SetUp(projectIDParam string, instanceParam string) {
+	projectID = projectIDParam
+	instance = instanceParam
 }
 
 func HandlerBigtable(w http.ResponseWriter, r *http.Request) {
@@ -37,7 +41,14 @@ func HandlerBigtable(w http.ResponseWriter, r *http.Request) {
 func doPost(w http.ResponseWriter, r *http.Request) {
 	ctx := context.Background()
 
-	adminClient, err := bigtable.NewAdminClient(ctx, projectID, instance)
+	tc, err := trace.NewClient(ctx, projectID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	do := grpc.WithUnaryInterceptor(tc.GRPCClientInterceptor())
+	o := option.WithGRPCDialOption(do)
+	adminClient, err := bigtable.NewAdminClient(ctx, projectID, instance, o)
 	if err != nil {
 		http.Error(w, fmt.Sprintf("Could not create admin client: project=%s, instance=%s : %v", projectID, instance, err), http.StatusInternalServerError)
 		return
@@ -58,7 +69,14 @@ func doPost(w http.ResponseWriter, r *http.Request) {
 func doPut(w http.ResponseWriter, r *http.Request) {
 	ctx := context.Background()
 
-	client, err := bigtable.NewClient(ctx, projectID, instance)
+	tc, err := trace.NewClient(ctx, projectID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	do := grpc.WithUnaryInterceptor(tc.GRPCClientInterceptor())
+	o := option.WithGRPCDialOption(do)
+	client, err := bigtable.NewClient(ctx, projectID, instance, o)
 	if err != nil {
 		http.Error(w, fmt.Sprintf("failed Bigtable.NewClient(): projectID=%s, instance=%s", projectID, instance), http.StatusInternalServerError)
 		return
