@@ -1,0 +1,15 @@
+{
+    "sourceFormat": "BIGTABLE",
+    "sourceUris": [
+        "https://googleapis.com/bigtable/projects/{projectID}/instances/sample/tables/Item"
+    ],
+    "bigtableOptions": {
+        "columnFamilies" : [
+            {
+                "familyId": "myfamily",
+                "type": "STRING",
+                "encoding": "BINARY"
+            }
+        ],
+    }
+}
