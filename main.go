@@ -39,13 +39,13 @@ func main() {
 
 	bigtable.SetUp(*project, *bigtableInstance)
 
-	traceClient, err := trace.NewClient(ctx, *project)
+	tc, err := trace.NewClient(ctx, *project)
 	if err != nil {
 		log.Fatalf("Failed to create client: %v", err)
 	}
 
 	http.HandleFunc("/", handler)
-	http.Handle("/bigtable", traceClient.HTTPHandler(http.HandlerFunc(bigtable.HandlerBigtable)))
+	http.Handle("/bigtable", tc.HTTPHandler(http.HandlerFunc(bigtable.HandlerBigtable)))
 
 	fmt.Println("listen start")
 	http.ListenAndServe(":8080", nil)

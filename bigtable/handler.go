@@ -19,9 +19,9 @@ var instance string
 const table = "Item"
 const family = "myfamily"
 
-func SetUp(projectIDParam string, instanceParam string) {
-	projectID = projectIDParam
-	instance = instanceParam
+func SetUp(p string, i string) {
+	projectID = p
+	instance = i
 }
 
 func HandlerBigtable(w http.ResponseWriter, r *http.Request) {
@@ -46,6 +46,9 @@ func doPost(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+	span := tc.NewSpan("/bigtable")
+	defer span.FinishWait()
+	ctx = trace.NewContext(ctx, span)
 	do := grpc.WithUnaryInterceptor(tc.GRPCClientInterceptor())
 	o := option.WithGRPCDialOption(do)
 	adminClient, err := bigtable.NewAdminClient(ctx, projectID, instance, o)
@@ -74,6 +77,9 @@ func doPut(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+	span := tc.NewSpan("/bigtable")
+	defer span.FinishWait()
+	ctx = trace.NewContext(ctx, span)
 	do := grpc.WithUnaryInterceptor(tc.GRPCClientInterceptor())
 	o := option.WithGRPCDialOption(do)
 	client, err := bigtable.NewClient(ctx, projectID, instance, o)
