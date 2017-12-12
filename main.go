@@ -10,6 +10,7 @@ import (
 	"golang.org/x/net/context"
 
 	"github.com/sinmetal/gcp_playground/bigtable"
+	"github.com/sinmetal/gcp_playground/datastore"
 
 	"cloud.google.com/go/trace"
 )
@@ -38,6 +39,7 @@ func main() {
 	fmt.Printf("bigtableInstance=%s\n", *bigtableInstance)
 
 	bigtable.SetUp(*project, *bigtableInstance)
+	datastore.SetUp(*project)
 
 	tc, err := trace.NewClient(ctx, *project)
 	if err != nil {
@@ -47,6 +49,7 @@ func main() {
 	http.HandleFunc("/", handler)
 	http.Handle("/bigtable", tc.HTTPHandler(http.HandlerFunc(bigtable.HandlerBigtable)))
 	http.Handle("/bigtable/bigbang", tc.HTTPHandler(http.HandlerFunc(bigtable.HandlerBigbang)))
+	http.Handle("/datastore", tc.HTTPHandler(http.HandlerFunc(datastore.Handler)))
 
 	fmt.Println("listen start")
 	http.ListenAndServe(":8080", nil)
