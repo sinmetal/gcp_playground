@@ -11,6 +11,7 @@ import (
 
 	"github.com/sinmetal/gcp_playground/bigtable"
 	"github.com/sinmetal/gcp_playground/datastore"
+	"github.com/sinmetal/gcp_playground/firestore"
 
 	"cloud.google.com/go/trace"
 )
@@ -40,6 +41,7 @@ func main() {
 
 	bigtable.SetUp(*project, *bigtableInstance)
 	datastore.SetUp(*project)
+	firestore.SetUp(*project)
 
 	tc, err := trace.NewClient(ctx, *project)
 	if err != nil {
@@ -50,6 +52,7 @@ func main() {
 	http.Handle("/bigtable", tc.HTTPHandler(http.HandlerFunc(bigtable.HandlerBigtable)))
 	http.Handle("/bigtable/bigbang", tc.HTTPHandler(http.HandlerFunc(bigtable.HandlerBigbang)))
 	http.Handle("/datastore", tc.HTTPHandler(http.HandlerFunc(datastore.Handler)))
+	http.Handle("/firestore", tc.HTTPHandler(http.HandlerFunc(firestore.Handler)))
 
 	fmt.Println("listen start")
 	http.ListenAndServe(":8080", nil)
