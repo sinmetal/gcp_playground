@@ -41,7 +41,7 @@ func doPost(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	span := tc.NewSpan("/bigtable")
+	span := tc.NewSpan("/datastore")
 	defer span.FinishWait()
 	ctx = trace.NewContext(ctx, span)
 	do := grpc.WithUnaryInterceptor(tc.GRPCClientInterceptor())
@@ -62,6 +62,6 @@ func doPost(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte(fmt.Sprintf("Done id = %d, key.String = %s", key.ID, key.String())))
+	w.Write([]byte(fmt.Sprintf("Done id = %d, key.Encode = %s", key.ID, key.Encode())))
 	return
 }
