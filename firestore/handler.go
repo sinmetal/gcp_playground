@@ -10,9 +10,7 @@ import (
 
 	"cloud.google.com/go/firestore"
 	"cloud.google.com/go/trace"
-
 	"github.com/google/uuid"
-
 	"google.golang.org/api/option"
 	"google.golang.org/grpc"
 )

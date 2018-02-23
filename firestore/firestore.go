@@ -2,11 +2,11 @@ package firestore
 
 import (
 	"fmt"
+	"context"
+	"time"
 
 	"cloud.google.com/go/firestore"
 	"github.com/pkg/errors"
-	"golang.org/x/net/context"
-	"time"
 )
 
 type Row struct {

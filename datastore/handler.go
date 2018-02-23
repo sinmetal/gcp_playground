@@ -5,9 +5,7 @@ import (
 	"net/http"
 
 	"golang.org/x/net/context"
-
 	"cloud.google.com/go/trace"
-
 	"cloud.google.com/go/datastore"
 	"google.golang.org/api/option"
 	"google.golang.org/grpc"

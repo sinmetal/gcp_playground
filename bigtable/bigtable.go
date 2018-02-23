@@ -5,7 +5,6 @@ import (
 	"time"
 
 	"golang.org/x/net/context"
-
 	"cloud.google.com/go/bigtable"
 )
 
