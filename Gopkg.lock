@@ -7,6 +7,7 @@
     "bigtable",
     "bigtable/internal/gax",
     "bigtable/internal/option",
+    "civil",
     "compute/metadata",
     "datastore",
     "firestore",
@@ -18,10 +19,17 @@
     "internal/version",
     "longrunning",
     "longrunning/autogen",
+    "spanner",
     "trace"
   ]
-  revision = "767c40d6a2e058483c25fa193e963a22da17236d"
-  version = "v0.18.0"
+  revision = "050b16d2314d5fc3d4c9a51e4cd5c7468e77f162"
+  version = "v0.17.0"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/golang/glog"
+  packages = ["."]
+  revision = "23def4e6c14b4da8ac2ed8007337bc5eb5007998"
 
 [[projects]]
   name = "github.com/golang/protobuf"
@@ -56,6 +64,21 @@
   packages = ["."]
   revision = "645ef00459ed84a119197bfb8d8205042c6df63d"
   version = "v0.8.0"
+
+[[projects]]
+  name = "go.opencensus.io"
+  packages = [
+    "internal/tagencoding",
+    "plugin/grpc",
+    "plugin/grpc/grpcstats",
+    "plugin/grpc/grpctrace",
+    "stats",
+    "tag",
+    "trace",
+    "trace/propagation"
+  ]
+  revision = "22f2851c619f086d3cc2845c4ec1873aea3e24e4"
+  version = "v0.1.0"
 
 [[projects]]
   branch = "master"
@@ -121,7 +144,6 @@
   branch = "master"
   name = "google.golang.org/api"
   packages = [
-    "cloudresourcemanager/v1",
     "cloudtrace/v1",
     "gensupport",
     "googleapi",
@@ -167,7 +189,9 @@
     "googleapis/firestore/v1beta1",
     "googleapis/iam/v1",
     "googleapis/longrunning",
+    "googleapis/rpc/errdetails",
     "googleapis/rpc/status",
+    "googleapis/spanner/v1",
     "googleapis/type/latlng",
     "protobuf/field_mask"
   ]
@@ -207,6 +231,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "984604dc616e7b239bb8282c06df3bf7e74995b90150ec2372a45781bd12830d"
+  inputs-digest = "298f239be97748c7dbf255ea24e3ca893cb11e373c4342954d49a1c631a3fcfa"
   solver-name = "gps-cdcl"
   solver-version = 1
