@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"net/http"
 
-	"golang.org/x/net/context"
-	"cloud.google.com/go/trace"
 	"cloud.google.com/go/datastore"
+	"cloud.google.com/go/trace"
+	"golang.org/x/net/context"
 	"google.golang.org/api/option"
 	"google.golang.org/grpc"
 )

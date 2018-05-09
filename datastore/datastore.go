@@ -1,7 +1,8 @@
 package datastore
 
 import (
-	"golang.org/x/net/context"
+	"context"
+
 	"cloud.google.com/go/datastore"
 )
 
