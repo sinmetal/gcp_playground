@@ -7,50 +7,43 @@ import (
 	"cloud.google.com/go/datastore"
 )
 
+// HogeV1 is Old Entity struct
 type HogeV1 struct {
 	Value int
 }
 
+// HogeV2 is New Entity struct
 type HogeV2 struct {
 	Value float64
 }
 
 var _ datastore.PropertyLoadSaver = &HogeV2{}
 
+// Load is datastore.PropertyLoadSaver を満たすためのfunc
+// Entityをstructに変換する処理
 func (h *HogeV2) Load(ps []datastore.Property) error {
-	var nps []datastore.Property
-	for _, v := range ps {
+	for idx, v := range ps {
 		if v.Name == "Value" {
 			switch i := v.Value.(type) {
-			case int:
-				v.Value = float64(i)
-			case int8:
-				v.Value = float64(i)
-			case int16:
-				v.Value = float64(i)
-			case int32:
-				v.Value = float64(i)
 			case int64:
 				v.Value = float64(i)
 			default:
 				// noop
 			}
+			ps[idx] = v
 		}
-		nps = append(nps, v)
 	}
 
-	err := datastore.LoadStruct(h, nps)
-	if err != nil {
-		return err
-	}
-
-	return nil
+	return datastore.LoadStruct(h, ps)
 }
 
+// Save is datastore.PropertyLoadSaver を満たすためのfunc
+// structをEntityに変換する処理
 func (h *HogeV2) Save() ([]datastore.Property, error) {
 	return datastore.SaveStruct(h)
 }
 
+// TestConvertPropertyType is Sample Test
 func TestConvertPropertyType(t *testing.T) {
 	ctx := context.Background()
 
@@ -72,6 +65,6 @@ func TestConvertPropertyType(t *testing.T) {
 		t.Fatal(err)
 	}
 	if e, g := 10.0, h.Value; e != g {
-		t.Fatalf("expected Value is %d, got %d", e, g)
+		t.Fatalf("expected Value is %f, got %f", e, g)
 	}
 }
